@@ -1,10 +1,51 @@
 import { Formik, Field, Form } from "formik";
 import "../styles/register.css";
+import { user } from "../api/client";
+import axios from "axios";
 
 function Register() {
-  const submitForm = async (values) => {
-    console.log(values);
+  const submitForm = async ({
+    username,
+    password,
+    email,
+    firstName,
+    lastName,
+    dateOfBirth,
+    gender,
+    state,
+    emergencyNumber,
+    phoneNumber,
+    salary,
+    department,
+    address,
+  }) => {
+    const data = {
+      username,
+      password,
+      email,
+      profile: {
+        firstName,
+        lastName,
+        dateOfBirth,
+        gender,
+        state,
+        emergencyNumber,
+        phoneNumber,
+        salary,
+        department,
+        address,
+      },
+    };
+
+    try {
+      const newUser = await user.create(data);
+
+      console.log(newUser);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   return (
     <div className="container form_container">
       <Formik
@@ -21,11 +62,12 @@ function Register() {
           emergencyNumber: "",
           phoneNumber: "",
           salary: "",
+          department: "",
         }}
         onSubmit={submitForm}
       >
         <Form className="row g-3 form">
-          <div className="">
+          <div className="col-md-6">
             <label htmlFor="username" className="form-label">
               Username
             </label>
@@ -36,7 +78,7 @@ function Register() {
               placeholder="Username"
             />
           </div>
-          <div>
+          <div className="col-md-6">
             <label htmlFor="password" className="form-label">
               Password
             </label>
@@ -45,6 +87,18 @@ function Register() {
               id="password"
               type="password"
               placeholder="password"
+              className="form-control"
+            />
+          </div>
+          <div className="">
+            <label htmlFor="email" className="form-label">
+              Email
+            </label>
+            <Field
+              id="email"
+              name="email"
+              placeholder="jane@acme.com"
+              type="email"
               className="form-control"
             />
           </div>
@@ -72,19 +126,6 @@ function Register() {
             />
           </div>
 
-          <div className="">
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <Field
-              id="email"
-              name="email"
-              placeholder="jane@acme.com"
-              type="email"
-              className="form-control"
-            />
-          </div>
-
           <div className="col-md-6">
             <label htmlFor="Date">Date of Birth</label>
             <Field
@@ -98,11 +139,11 @@ function Register() {
             <label htmlFor="State">State</label>
             <Field name="state" as="select" className="form-select" id="state">
               <option value=""></option>
-              <option value="red">Texas</option>
-              <option value="green">New York</option>
-              <option value="blue">Mississippi</option>
-              <option value="blue">Kentucky</option>
-              <option value="blue">California</option>
+              <option value="Texas">Texas</option>
+              <option value="New York">New York</option>
+              <option value="Mississippi">Mississippi</option>
+              <option value="Kentucky">Kentucky</option>
+              <option value="California">California</option>
             </Field>
           </div>
           <div className="">
@@ -159,10 +200,10 @@ function Register() {
               Department
             </label>
             <Field
-              name="gender"
+              name="department"
               as="select"
               className="form-select"
-              id="gender"
+              id="department"
             >
               <option value=""></option>
               <option value="IT">IT</option>

@@ -1,24 +1,73 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { user } from "../api/client";
 
 const initialState = {
   username: "",
   isAuth: false,
   email: "",
-  authorization: [],
+  roles: [],
+  isLoading: true,
 };
 
 const userSlice = createSlice({
-  name: "counter",
-  initialState: initialState,
+  name: "user",
+  initialState,
   reducers: {
-    logIn: (state) => {
-      state.value += 1;
+    logIn: (
+      { username, isAuth, email, roles },
+      { payload: { username: name, email: mail, token, roles: rolesAuth } }
+    ) => {
+      if (localStorage.getItem("Authorization")) {
+        localStorage.removeItem("Authorization");
+      }
+
+      const userStorage = { username: name, email: mail, isAuth: true };
+      localStorage.setItem("user", JSON.stringify(userStorage));
+
+      localStorage.setItem("Authorization", `Bearer ${token}`);
+      return {
+        username: name,
+        isAuth: true,
+        email: mail,
+        roles: rolesAuth,
+        isLoading: false,
+      };
     },
-    logOut: (state) => {
-      state.value -= 1;
+    verifyToken: (state, { payload: { name, mail } }) => {
+      return {
+        ...state,
+        username: name,
+        emai: mail,
+        isAuth: true,
+        isLoading: false,
+      };
+    },
+    setLoading: (state, action) => {
+      console.log(action.payload);
+      return { ...state, isLoading: action.payload };
+    },
+    signOut: (state, action) => {
+      return {
+        ...state,
+        username: "",
+        isAuth: false,
+        email: "",
+        roles: [],
+        isLoading: false,
+      };
     },
   },
 });
 
-export const { increment, decrement } = userSlice.actions;
+export const logInAuth = (userData) => async (dispatch) => {
+  try {
+    const { data } = await user.logIn(userData);
+    console.log(data);
+    dispatch(userSlice.actions.logIn(data));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const { logIn, verifyToken, setLoading, signOut } = userSlice.actions;
 export default userSlice.reducer;
