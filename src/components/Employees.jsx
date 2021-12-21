@@ -1,6 +1,17 @@
 import data from "../api/data";
-
+import { user } from "../api/client";
+import { useState, useEffect } from "react";
 function Employees() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      const userInfo = await user.getAll();
+      setData(userInfo.data);
+    };
+    getUsers();
+  }, []);
+
   return (
     <div className="">
       <table className="table">
@@ -16,8 +27,8 @@ function Employees() {
           {data.map((user) => (
             <tr key={user.id}>
               <th scope="row">1</th>
-              <td>{user.firstName}</td>
-              <td>{user.lastName}</td>
+              <td>{user.username}</td>
+              <td>test</td>
               <td>
                 <button type="button" className="btn btn-primary me-2">
                   Update

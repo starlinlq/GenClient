@@ -1,18 +1,26 @@
 import axios from "axios";
 
 const response = async (response) => response;
-
+const config = {
+  headers: {
+    Authorization: localStorage.getItem("Authorization"),
+  },
+};
 const requests = {
-  get: (url) => response(axios.get(url)),
+  get: (url) =>
+    response(
+      axios.get(url, {
+        headers: {
+          Authorization: localStorage.getItem("Authorization"),
+        },
+      })
+    ),
   put: (url, data) => response(axios.put(url, data)),
   post: (url, data) =>
     response(
       axios.post(url, data, {
         headers: {
           Authorization: localStorage.getItem("Authorization"),
-          "Access-Control-Allow-Origin": "http://localhost:3000",
-          "Access-Control-Allow-Methods": "POST",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
         },
       })
     ),
@@ -26,6 +34,7 @@ const user = {
       password,
     }),
   create: (data) => requests.post("http://localhost:8081/api/v1/auth", data),
+  getAll: () => requests.get("http://localhost:8081/api/v1/auth"),
 };
 
 const profile = {};
