@@ -21,7 +21,7 @@ const userSlice = createSlice({
         localStorage.removeItem("Authorization");
       }
 
-      const userStorage = { username: name, email: mail, isAuth: true };
+      const userStorage = { email: mail, isAuth: true };
       localStorage.setItem("user", JSON.stringify(userStorage));
 
       localStorage.setItem("Authorization", `Bearer ${token}`);
@@ -37,7 +37,7 @@ const userSlice = createSlice({
       return {
         ...state,
         username: name,
-        emai: mail,
+        email: mail,
         isAuth: true,
         isLoading: false,
       };
@@ -68,6 +68,8 @@ export const logInAuth = (userData) => async (dispatch) => {
     console.log(error);
   }
 };
+
+export const getProfile = (profileId) => async (dispatch) => {};
 
 export const { logIn, verifyToken, setLoading, signOut } = userSlice.actions;
 export default userSlice.reducer;

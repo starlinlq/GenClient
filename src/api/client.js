@@ -37,5 +37,9 @@ const user = {
   getAll: () => requests.get("http://localhost:8081/api/v1/auth"),
 };
 
-const profile = {};
+const profile = {
+  get: (userId) =>
+    requests.get(`http://localhost:8081/api/v1/profile/${userId}`),
+};
+
 export { user, profile };

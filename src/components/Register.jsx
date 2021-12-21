@@ -1,9 +1,34 @@
 import { Formik, Field, Form } from "formik";
 import "../styles/register.css";
-import { user } from "../api/client";
+import { profile, user } from "../api/client";
 import axios from "axios";
+import { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function Register() {
+  const [created, setCreated] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const [
+    state = {
+      firstName: "",
+      username: "",
+      email: "",
+      password: "",
+      lastName: "",
+      dateOfBirth: "",
+      address: "",
+      state: "",
+      gender: "",
+      emergencyNumber: "",
+      phoneNumber: "",
+      salary: "",
+      department: "",
+    },
+    setInitialState,
+  ] = useState();
+  const { profileId } = useParams();
+
   const submitForm = async ({
     username,
     password,
@@ -25,6 +50,7 @@ function Register() {
       email,
       profile: {
         firstName,
+        email,
         lastName,
         dateOfBirth,
         gender,
@@ -39,57 +65,74 @@ function Register() {
 
     try {
       const newUser = await user.create(data);
-
+      setCreated(true);
       console.log(newUser);
     } catch (error) {
       console.log(error);
     }
   };
 
+  useEffect(() => {
+    const getProfile = async () => {
+      try {
+        const { data } = await profile.get(profileId);
+        setUpdating(true);
+        setInitialState({
+          ...data,
+          dateOfBirth: data.dateOfBirth.slice(0, 10),
+        });
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (profileId) {
+      getProfile();
+    }
+  }, [profileId]);
+
+  if (created) {
+    return <Navigate to={`/dashboard`} />;
+  }
+
   return (
     <div className="container form_container">
       <Formik
+        enableReinitialize
         initialValues={{
-          firstName: "",
-          username: "",
-          email: "",
-          password: "",
-          lastName: "",
-          dateOfBirth: "",
-          address: "",
-          state: "",
-          gender: "",
-          emergencyNumber: "",
-          phoneNumber: "",
-          salary: "",
-          department: "",
+          ...state,
         }}
         onSubmit={submitForm}
       >
         <Form className="row g-3 form">
-          <div className="col-md-6">
-            <label htmlFor="username" className="form-label">
-              Username
-            </label>
-            <Field
-              className="form-control"
-              id="username"
-              name="username"
-              placeholder="Username"
-            />
-          </div>
-          <div className="col-md-6">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <Field
-              name="password"
-              id="password"
-              type="password"
-              placeholder="password"
-              className="form-control"
-            />
-          </div>
+          {!updating && (
+            <>
+              {" "}
+              <div className="col-md-6">
+                <label htmlFor="username" className="form-label">
+                  Username
+                </label>
+                <Field
+                  className="form-control"
+                  id="username"
+                  name="username"
+                  placeholder="Username"
+                />
+              </div>
+              <div className="col-md-6">
+                <label htmlFor="password" className="form-label">
+                  Password
+                </label>
+                <Field
+                  name="password"
+                  id="password"
+                  type="password"
+                  placeholder="password"
+                  className="form-control"
+                />
+              </div>
+            </>
+          )}
           <div className="">
             <label htmlFor="email" className="form-label">
               Email
@@ -138,7 +181,6 @@ function Register() {
           <div className="col-md-6">
             <label htmlFor="State">State</label>
             <Field name="state" as="select" className="form-select" id="state">
-              <option value=""></option>
               <option value="Texas">Texas</option>
               <option value="New York">New York</option>
               <option value="Mississippi">Mississippi</option>
@@ -225,9 +267,18 @@ function Register() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary">
-            Submit
-          </button>
+          <div className="col-md-6">
+            <button type="submit" className="btn btn-primary">
+              {updating ? "Update" : "Submit"}
+            </button>
+            <button
+              onClick={() => setCreated(true)}
+              type="button"
+              className="btn btn-danger ms-2"
+            >
+              Cancel
+            </button>
+          </div>
         </Form>
       </Formik>
     </div>
