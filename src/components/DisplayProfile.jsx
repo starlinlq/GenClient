@@ -1,7 +1,7 @@
 import "../styles/profile.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { profile as profileApi } from "../api/client";
 
 function DisplayProfile() {
@@ -28,7 +28,9 @@ function DisplayProfile() {
       {profile && (
         <>
           {" "}
-          <button className="btn btn-primary mb-3 ">Update profile</button>
+          <Link to={`/update/${userId}`} className="btn btn-primary mb-3 ">
+            Update profile
+          </Link>
           <div className="row">
             <div className="col border">
               <label htmlFor="firstName" className="fs-6 fw-light">

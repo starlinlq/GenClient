@@ -3,25 +3,11 @@ import { user } from "../api/client";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-function Employees() {
-  const { email: userEmail } = useSelector((state) => state.user);
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    const getUsers = async () => {
-      try {
-        const { data } = await user.getAll();
-
-        // const filtered = data.filter((u) => u.email !== userEmail);
-
-        setData(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getUsers();
-  }, []);
-
+function Employees({ data }) {
+  const handleDelete = async (id) => {
+    const data = await user.delete(id);
+    console.log(data);
+  };
   return (
     <div className="">
       <table className="table">
@@ -31,6 +17,7 @@ function Employees() {
             <th scope="col">First Name</th>
             <th scope="col">Last Name</th>
             <th scope="col">Email</th>
+            <th scope="col">Hired Date</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
@@ -41,6 +28,7 @@ function Employees() {
               <td>{user.firstName}</td>
               <td>{user.lastName}</td>
               <td>{user.email}</td>
+              <td>{user.hiredDate}</td>
               <td>
                 <Link
                   to={`/update/${user.profileId}`}
@@ -48,7 +36,11 @@ function Employees() {
                 >
                   Update
                 </Link>
-                <button className="btn btn-danger me-2" type="button">
+                <button
+                  onClick={() => handleDelete(user.id)}
+                  className="btn btn-danger me-2"
+                  type="button"
+                >
                   Delete
                 </button>
                 <Link

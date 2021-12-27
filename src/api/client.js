@@ -15,7 +15,14 @@ const requests = {
         },
       })
     ),
-  put: (url, data) => response(axios.put(url, data)),
+  put: (url, data) =>
+    response(
+      axios.put(url, data, {
+        headers: {
+          Authorization: localStorage.getItem("Authorization"),
+        },
+      })
+    ),
   post: (url, data) =>
     response(
       axios.post(url, data, {
@@ -24,7 +31,14 @@ const requests = {
         },
       })
     ),
-  delete: (url) => response(axios.delete(url)),
+  delete: (url) =>
+    response(
+      axios.delete(url, {
+        headers: {
+          Authorization: localStorage.getItem("Authorization"),
+        },
+      })
+    ),
 };
 
 const user = {
@@ -34,7 +48,14 @@ const user = {
       password,
     }),
   create: (data) => requests.post("http://localhost:8081/api/v1/auth", data),
-  getAll: () => requests.get("http://localhost:8081/api/v1/auth"),
+  getAll: (filter) =>
+    requests.get("http://localhost:8081/api/v1/auth/?" + filter),
+  search: (search, filter) =>
+    requests.get(
+      "http://localhost:8081/api/v1/auth/search?query=" + search + "&" + filter
+    ),
+  delete: (id) =>
+    requests.delete("http://localhost:8081/api/v1/auth?userId=" + id),
 };
 
 const profile = {
