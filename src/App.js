@@ -2,13 +2,13 @@ import "./App.css";
 import NavBar from "./components/Navbar";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Register from "./components/Register";
-import Home from "./components/Home";
 import { verifyToken, setLoading } from "./store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import RequiredAuth from "./components/RequiredAuth";
 import LogIn from "./components/LogIn";
 import DisplayProfile from "./components/DisplayProfile";
+import DashBoard from "./components/DashBoard";
 
 function App() {
   const { isAuth, isLoading } = useSelector((state) => state.user);
@@ -65,7 +65,7 @@ function App() {
               path="/dashboard"
               element={
                 <RequiredAuth redirectTo="/login">
-                  <Home />
+                  <DashBoard />
                 </RequiredAuth>
               }
             />
